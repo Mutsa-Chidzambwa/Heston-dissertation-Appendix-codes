@@ -3,7 +3,7 @@ from scipy.integrate import quad
 import warnings
 warnings.filterwarnings('ignore')
 
-# ── True parameters θ* ────────────────────────────────────────────────────
+# True parameters θ*
 KAPPA   = 2.0
 THETA   = 0.04
 SIGMA_V = 0.30
@@ -17,7 +17,7 @@ K_ATM = 100.0
 TAU   = 1.0
 N     = 200     # time steps per path
 
-# ── Semi-analytical price (Albrecher et al. branch-cut-safe) ──────────────
+# Semi-analytical price (Albrecher et al. branch-cut-safe) 
 def heston_cf(u, S0, V0, kappa, theta, sigma_v, rho, r, tau):
     i   = 1j
     d   = np.sqrt((kappa - i*rho*sigma_v*u)**2 + sigma_v**2*(u**2 + i*u))
@@ -47,7 +47,7 @@ def sa_price(S0, K, r, tau, V0, kappa, theta, sigma_v, rho):
     P2 = 0.5 + quad(i2, 1e-8, 200, limit=200, epsabs=1e-8)[0] / np.pi
     return S0*P1 - K*np.exp(-r*tau)*P2
 
-# ── Standard MC (no variance reduction) ───────────────────────────────────
+# Standard MC (no variance reduction)
 def mc_standard(M, seed=42):
     np.random.seed(seed)
     dt  = TAU / N
@@ -65,7 +65,7 @@ def mc_standard(M, seed=42):
     se     = payoff.std(ddof=1) / np.sqrt(M)
     return price, se
 
-# ── Antithetic variates MC ─────────────────────────────────────────────────
+# Antithetic variates MC
 def mc_antithetic(M, seed=42):
     np.random.seed(seed)
     dt  = TAU / N
@@ -91,7 +91,7 @@ def mc_antithetic(M, seed=42):
     se     = payoff.std(ddof=1) / np.sqrt(M)
     return price, se
 
-# ── Run ────────────────────────────────────────────────────────────────────
+# Run 
 print("=" * 65)
 print("TABLE 6.1: Effect of Antithetic Variates on MC Standard Error")
 print(f"ATM Call:  K = {K_ATM},  tau = {TAU}y,  N = {N} time steps")
@@ -116,5 +116,4 @@ for M in [50_000, 25_000]:
     print(f"{'With antithetic':<25} {M:>8,} {SA:>10.4f} "
           f"{se_anti:>11.4f} {f'~{reduction:.0f}%':>13}")
     print()
-
-# %%
+    
