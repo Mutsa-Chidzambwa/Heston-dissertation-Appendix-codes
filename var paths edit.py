@@ -1,15 +1,14 @@
-# %%
 import os
 import numpy as np
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
-# ── Output path ───────────────────────────────────────────────────────────────
+# Output path
 SAVE_DIR = r"C:\Users\User\OneDrive\Desktop\HFM470 Dissertation\images Chapter 2 and 3"
 os.makedirs(SAVE_DIR, exist_ok=True)
 
-# ── True parameters θ* ────────────────────────────────────────────────────────
+#  True parameters θ*
 KAPPA   = 2.0
 THETA   = 0.04      # long-run variance  (= 4%)
 SIGMA_V = 0.30
@@ -18,7 +17,7 @@ T_END   = 1.0       # simulate over one year
 N_STEPS = 500       # time steps
 N_PATHS = 5
 
-# ── Plot style ────────────────────────────────────────────────────────────────
+#  Plot style
 plt.rcParams.update({
     "font.family":       "serif",
     "font.size":         11,
@@ -72,7 +71,7 @@ for step in range(N_STEPS):
 # e.g. V = 0.04  →  4%
 paths_pct = paths * 100.0
 
-# ── Analytical ±1 SD band for the CIR process ────────────────────────────────
+# Analytical ±1 SD band for the CIR process
 # E[V_t]   = θ + (V_0 − θ) e^{−κt}
 # Var[V_t] = V_0 σ_v² e^{−κt}/κ · (1 − e^{−κt})
 #           + θ σ_v²/(2κ) · (1 − e^{−κt})²
@@ -88,10 +87,8 @@ e_v_pct   = e_v   * 100.0
 std_v_pct = std_v * 100.0
 theta_pct = THETA * 100.0          # 4%
 
-# ════════════════════════════════════════════════════════════════════════════
-#  PLOT
-# ════════════════════════════════════════════════════════════════════════════
 
+#  PLOT
 fig, ax = plt.subplots(figsize=(9, 5))
 
 # ±1 SD band (analytical)
@@ -125,7 +122,7 @@ ax.set_title(
     r"  Feller condition satisfied: $2\kappa\theta = 0.16 > \sigma_v^2 = 0.09$)"
 )
 
-# ── Annotation box explaining the y-axis scale ────────────────────────────
+# Annotation box explaining the y-axis scale
 ax.text(
     0.02, 0.97,
     r"Note: $V_t = 0.04$ plots as $4$ on this axis",
@@ -146,10 +143,7 @@ ax.legend(handles, labels, loc="upper right",
 
 plt.tight_layout()
 
-# ════════════════════════════════════════════════════════════════════════════
 #  SAVE
-# ════════════════════════════════════════════════════════════════════════════
-
 for ext in ("pdf", "png"):
     fpath = os.path.join(SAVE_DIR, f"fig67_var_paths.{ext}")
     plt.savefig(fpath, bbox_inches="tight", dpi=300)
@@ -157,4 +151,3 @@ for ext in ("pdf", "png"):
 
 plt.close()
 print("Done.")
-# %%
