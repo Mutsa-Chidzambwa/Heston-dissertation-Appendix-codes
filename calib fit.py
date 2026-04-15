@@ -9,11 +9,11 @@ import warnings
 warnings.filterwarnings('ignore')
 import os
 
-# ── Save path ──────────────────────────────────────────────────────────────
+# Save path
 SAVE_DIR = r"C:\Users\User\OneDrive\Desktop\HFM470 Dissertation\images Chapter 2 and 3"
 os.makedirs(SAVE_DIR, exist_ok=True)
 
-# ── Colours ────────────────────────────────────────────────────────────────
+#  Colours 
 C1 = '#1a4f8a'; C2 = '#c0392b'; C3 = '#1e8449'; C4 = '#7d3c98'; GREY = '#7f8c8d'
 
 plt.rcParams.update({
@@ -22,7 +22,7 @@ plt.rcParams.update({
     'legend.fontsize': 10, 'lines.linewidth': 2.0, 'figure.dpi': 150,
 })
 
-# ── Parameters ─────────────────────────────────────────────────────────────
+#  Parameters 
 KAPPA   = 2.0
 THETA   = 0.04
 SIGMA_V = 0.30
@@ -36,7 +36,7 @@ MATURITIES = np.array([0.25, 0.5, 1.0, 1.5, 2.0])
 MONEYNESS  = np.log(STRIKES / S0)
 bs_flat_vol = np.sqrt(THETA)
 
-# ── Pricing functions ──────────────────────────────────────────────────────
+# Pricing functions
 def heston_cf(u, S0, V0, kappa, theta, sigma_v, rho, r, tau):
     xi  = kappa - rho * sigma_v * 1j * u
     d   = np.sqrt(xi**2 + sigma_v**2 * u * (u + 1j))
@@ -83,7 +83,7 @@ def implied_vol(S, K, r, tau, price):
         if abs(p - price) < 1e-9: break
     return sigma
 
-# ── Build market surface ───────────────────────────────────────────────────
+# Build market surface 
 print("Building market surface...")
 heston_ivs = np.zeros((len(MATURITIES), len(STRIKES)))
 for i, tau in enumerate(MATURITIES):
@@ -91,7 +91,7 @@ for i, tau in enumerate(MATURITIES):
         p = heston_call(S0, K, r, tau, V0, KAPPA, THETA, SIGMA_V, RHO)
         heston_ivs[i, j] = implied_vol(S0, K, r, tau, p)
 
-# ── Calibrate ─────────────────────────────────────────────────────────────
+# Calibrate
 print("Running calibration...")
 
 def loss(params):
@@ -123,9 +123,8 @@ for i, tau in enumerate(MATURITIES):
     for j, K in enumerate(STRIKES):
         p = heston_call(S0, K, r, tau, V0_C, KAPPA_C, THETA_C, SIGMA_V_C, RHO_C)
         calib_ivs[i, j] = implied_vol(S0, K, r, tau, p)
-
-# ── Plot ───────────────────────────────────────────────────────────────────
-# ── Plot ───────────────────────────────────────────────────────────────────
+# Plot
+# Plot 
 fig, axes = plt.subplots(1, 3, figsize=(14, 5))
 for idx, i in enumerate([0, 2, 4]):
     tau = MATURITIES[i]
@@ -162,10 +161,3 @@ plt.savefig(os.path.join(SAVE_DIR, 'fig03_calib_fit.pdf'), bbox_inches='tight')
 plt.savefig(os.path.join(SAVE_DIR, 'fig03_calib_fit.png'), bbox_inches='tight', dpi=200)
 plt.close()
 print("Saved: fig03_calib_fit.pdf and fig03_calib_fit.png")
-
-
-# In[ ]:
-
-
-
-
