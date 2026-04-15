@@ -9,7 +9,7 @@ import warnings
 warnings.filterwarnings('ignore')
 import os
 
-# ── Save path ──────────────────────────────────────────────────────────────
+# Save path
 SAVE_DIR = r"C:\Users\User\OneDrive\Desktop\HFM470 Dissertation\images Chapter 2 and 3"
 os.makedirs(SAVE_DIR, exist_ok=True)
 
@@ -19,14 +19,14 @@ plt.rcParams.update({
     'legend.fontsize': 10, 'lines.linewidth': 2.0, 'figure.dpi': 150,
 })
 
-# ── Parameters ─────────────────────────────────────────────────────────────
+# Parameters
 KAPPA   = 2.0; THETA = 0.04; SIGMA_V = 0.30; RHO = -0.70; V0 = 0.04
 r = 0.05; S0 = 100.0
 STRIKES    = np.array([80, 85, 90, 95, 100, 105, 110, 115, 120], dtype=float)
 MATURITIES = np.array([0.25, 0.5, 1.0, 1.5, 2.0])
 bs_flat_vol = np.sqrt(THETA)
 
-# ── Pricing functions ──────────────────────────────────────────────────────
+# Pricing functions 
 def heston_cf(u, S0, V0, kappa, theta, sigma_v, rho, r, tau):
     xi = kappa - rho*sigma_v*1j*u; d = np.sqrt(xi**2+sigma_v**2*u*(u+1j))
     g2 = (xi-d)/(xi+d); ed = np.exp(-d*tau); den = 1.0-g2*ed
@@ -55,7 +55,7 @@ def implied_vol(S,K,r,tau,price):
         if abs(p-price)<1e-9: break
     return sigma
 
-# ── Build surfaces ─────────────────────────────────────────────────────────
+# Build surfaces
 print("Building surfaces...")
 heston_ivs = np.zeros((len(MATURITIES), len(STRIKES)))
 for i, tau in enumerate(MATURITIES):
@@ -93,7 +93,7 @@ for i, tau in enumerate(MATURITIES):
 
 bs_ivs = np.full_like(heston_ivs, bs_flat_vol)
 
-# ── Plot ───────────────────────────────────────────────────────────────────
+# Plot
 iv_err_bs     = np.abs(bs_ivs    - heston_ivs) * 100
 iv_err_heston = np.abs(calib_ivs - heston_ivs) * 100
 vmax = iv_err_bs.max()
@@ -131,4 +131,3 @@ plt.close()
 print("Saved: fig04_iv_error.pdf and fig04_iv_error.png")
 print(f"  BS RMSE:     {np.sqrt(np.mean(iv_err_bs**2)):.4f} pp")
 print(f"  Heston RMSE: {np.sqrt(np.mean(iv_err_heston**2)):.6f} pp")
-
