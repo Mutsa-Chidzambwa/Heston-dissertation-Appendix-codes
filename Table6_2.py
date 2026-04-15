@@ -3,7 +3,7 @@ from scipy.integrate import quad
 import warnings
 warnings.filterwarnings('ignore')
 
-# ── True parameters θ* ────────────────────────────────────────────────────
+# True parameters θ* 
 KAPPA   = 2.0
 THETA   = 0.04
 SIGMA_V = 0.30
@@ -14,7 +14,7 @@ S0      = 100.0
 M       = 50_000   # paths
 N       = 200      # time steps per path
 
-# ── Contracts for Table 6.2 ───────────────────────────────────────────────
+# Contracts for Table 6.2 
 CONTRACTS = [
     (90,  1.00),
     (100, 0.25),
@@ -24,7 +24,7 @@ CONTRACTS = [
     (110, 1.00),
 ]
 
-# ── Semi-analytical price (Albrecher et al. branch-cut-safe) ──────────────
+# Semi-analytical price (Albrecher et al. branch-cut-safe)
 def heston_cf(u, S0, V0, kappa, theta, sigma_v, rho, r, tau):
     i   = 1j
     d   = np.sqrt((kappa - i*rho*sigma_v*u)**2 + sigma_v**2*(u**2 + i*u))
@@ -54,7 +54,7 @@ def sa_price(S0, K, r, tau, V0, kappa, theta, sigma_v, rho):
     P2 = 0.5 + quad(i2, 1e-8, 200, limit=200, epsabs=1e-8)[0] / np.pi
     return S0*P1 - K*np.exp(-r*tau)*P2
 
-# ── Monte Carlo with antithetic variates ──────────────────────────────────
+# Monte Carlo with antithetic variates
 def mc_antithetic(K, tau, seed=42):
     np.random.seed(seed)
     dt  = tau / N
@@ -80,7 +80,7 @@ def mc_antithetic(K, tau, seed=42):
     se     = payoff.std(ddof=1) / np.sqrt(M)
     return price, se
 
-# ── Run ────────────────────────────────────────────────────────────────────
+# Run 
 print("=" * 72)
 print("TABLE 6.2: Monte Carlo Validation Against Semi-Analytical Prices")
 print(f"S0 = {S0},  M = {M:,} paths (antithetic),  N = {N} time steps")
@@ -109,4 +109,3 @@ if all_within:
 else:
     print("WARNING: Some MC prices lie outside 2 SE — check implementation.")
 print()
-# %%
