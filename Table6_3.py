@@ -5,7 +5,7 @@ from scipy.optimize import minimize
 import warnings
 warnings.filterwarnings('ignore')
 
-# ── True parameters θ* ────────────────────────────────────────────────────
+# True parameters θ*
 TRUE = {
     'kappa':   2.0,
     'theta':   0.04,
@@ -19,7 +19,7 @@ S0 = 100.0
 STRIKES    = np.array([80, 85, 90, 95, 100, 105, 110, 115, 120], dtype=float)
 MATURITIES = np.array([0.25, 0.5, 1.0, 1.5, 2.0])
 
-# ── Pricing functions ──────────────────────────────────────────────────────
+# Pricing functions 
 def heston_cf(u, S0, V0, kappa, theta, sigma_v, rho, r, tau):
     i   = 1j
     d   = np.sqrt((kappa - i*rho*sigma_v*u)**2 + sigma_v**2*(u**2 + i*u))
@@ -71,7 +71,7 @@ def implied_vol(S, K, r, tau, price):
             break
     return sigma
 
-# ── Step 1: Build simulated market surface at θ* ──────────────────────────
+# Step 1: Build simulated market surface at θ*
 print("Building simulated market surface at θ*...")
 market_ivs = np.zeros((len(MATURITIES), len(STRIKES)))
 for i, tau in enumerate(MATURITIES):
@@ -81,7 +81,7 @@ for i, tau in enumerate(MATURITIES):
                         TRUE['sigma_v'], TRUE['rho'])
         market_ivs[i, j] = implied_vol(S0, K, r, tau, p)
 
-# ── Step 2: Define vega-weighted loss function ────────────────────────────
+# Step 2: Define vega-weighted loss function 
 def loss(params):
     kappa, theta, sigma_v, rho, V0 = params
     if (kappa <= 0 or theta <= 0 or sigma_v <= 0
@@ -100,7 +100,7 @@ def loss(params):
                 total += 1e4
     return total
 
-# ── Step 3: Two-stage calibration ─────────────────────────────────────────
+# Step 3: Two-stage calibration 
 # Stage 1: perturbed start simulates what DE hands to L-BFGS-B
 x0     = np.array([TRUE['kappa']   * 1.10,
                    TRUE['theta']   * 0.95,
@@ -124,7 +124,7 @@ calib = result.x
 kappa_c, theta_c, sigma_v_c, rho_c, V0_c = calib
 final_loss = result.fun
 
-# ── Step 4: Calibrated surface and RMSE ───────────────────────────────────
+# Step 4: Calibrated surface and RMSE
 calib_ivs  = np.zeros_like(market_ivs)
 bs_flat    = np.sqrt(TRUE['theta'])     # BS uses flat vol = sqrt(theta*)
 bs_ivs     = np.full_like(market_ivs, bs_flat)
@@ -138,7 +138,7 @@ for i, tau in enumerate(MATURITIES):
 rmse_heston = np.sqrt(np.mean((calib_ivs  - market_ivs)**2)) * 100
 rmse_bs     = np.sqrt(np.mean((bs_ivs     - market_ivs)**2)) * 100
 
-# ── Print results ──────────────────────────────────────────────────────────
+# Print results 
 print()
 print("=" * 70)
 print("TABLE 6.3: Calibration Results — Recovered Parameters vs True Values")
@@ -170,6 +170,3 @@ print(f"  Improvement factor : {rmse_bs/max(rmse_heston,1e-10):.0f}x")
 print()
 print("=" * 70)
 print("=" * 70)
-# %%
-
-# %%
