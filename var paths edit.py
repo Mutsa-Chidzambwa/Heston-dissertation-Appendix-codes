@@ -40,7 +40,6 @@ PATH_COLORS = ["#2166AC",   # blue
 
 BAND_COLOR = "steelblue"
 
-# ════════════════════════════════════════════════════════════════════════════
 #  SIMULATE CIR VARIANCE PATHS
 #  Euler full-truncation scheme  (Lord et al. 2010)
 #
@@ -49,7 +48,7 @@ BAND_COLOR = "steelblue"
 #  V_t^+ = max(V_t, 0)  ← full truncation prevents negative variance
 #  All values stored and plotted as variance (NOT volatility),
 #  scaled to percentage points by multiplying by 100.
-# ════════════════════════════════════════════════════════════════════════════
+
 
 dt     = T_END / N_STEPS
 t_grid = np.linspace(0.0, T_END, N_STEPS + 1)
