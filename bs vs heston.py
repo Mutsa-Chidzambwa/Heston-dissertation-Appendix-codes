@@ -8,11 +8,11 @@ import warnings
 warnings.filterwarnings('ignore')
 import os
 
-# ── Save path ──────────────────────────────────────────────────────────────
+# Save path
 SAVE_DIR = r"C:\Users\User\OneDrive\Desktop\HFM470 Dissertation\images Chapter 2 and 3"
 os.makedirs(SAVE_DIR, exist_ok=True)
 
-# ── Colours ────────────────────────────────────────────────────────────────
+# Colours 
 C1 = '#1a4f8a'; C2 = '#c0392b'; C3 = '#1e8449'; C4 = '#7d3c98'; GREY = '#7f8c8d'
 
 plt.rcParams.update({
@@ -21,7 +21,7 @@ plt.rcParams.update({
     'legend.fontsize': 10, 'lines.linewidth': 2.0, 'figure.dpi': 150,
 })
 
-# ── Parameters ─────────────────────────────────────────────────────────────
+#  Parameters 
 KAPPA   = 2.0
 THETA   = 0.04
 SIGMA_V = 0.30
@@ -35,7 +35,7 @@ MATURITIES = np.array([0.25, 0.5, 1.0, 1.5, 2.0])
 MONEYNESS  = np.log(STRIKES / S0)
 bs_flat_vol = np.sqrt(THETA)
 
-# ── Pricing functions ──────────────────────────────────────────────────────
+#  Pricing functions 
 def heston_cf(u, S0, V0, kappa, theta, sigma_v, rho, r, tau):
     xi  = kappa - rho * sigma_v * 1j * u
     d   = np.sqrt(xi**2 + sigma_v**2 * u * (u + 1j))
@@ -82,7 +82,7 @@ def implied_vol(S, K, r, tau, price):
         if abs(p - price) < 1e-9: break
     return sigma
 
-# ── Compute surfaces ───────────────────────────────────────────────────────
+# Compute surfaces 
 print("Computing surfaces...")
 heston_prices = np.zeros((len(MATURITIES), len(STRIKES)))
 heston_ivs    = np.zeros_like(heston_prices)
@@ -95,7 +95,7 @@ for i, tau in enumerate(MATURITIES):
         heston_ivs[i, j]    = implied_vol(S0, K, r, tau, hp)
         bs_prices[i, j]     = bs_call(S0, K, r, tau, bs_flat_vol)
 
-# ── Plot ───────────────────────────────────────────────────────────────────
+#  Plot
 fig, axes = plt.subplots(1, 2, figsize=(13, 5.5))
 sel_idx    = [0, 2, 4]           # tau = 0.25, 1.0, 2.0
 sel_colors = [C1, C3, C4]
@@ -141,10 +141,3 @@ plt.savefig(os.path.join(SAVE_DIR, 'fig02_heston_vs_bs.pdf'), bbox_inches='tight
 plt.savefig(os.path.join(SAVE_DIR, 'fig02_heston_vs_bs.png'), bbox_inches='tight', dpi=200)
 plt.close()
 print("Saved: fig02_heston_vs_bs.pdf and fig02_heston_vs_bs.png")
-
-
-
-
-
-
-
