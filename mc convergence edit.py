@@ -5,11 +5,11 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from scipy.integrate import quad
 
-# ── Output path ───────────────────────────────────────────────────────────────
+# Output path
 SAVE_DIR = r"C:\Users\User\OneDrive\Desktop\HFM470 Dissertation\images Chapter 2 and 3"
 os.makedirs(SAVE_DIR, exist_ok=True)
 
-# ── True parameters θ* ────────────────────────────────────────────────────────
+# True parameters θ*
 KAPPA   = 2.0
 THETA   = 0.04
 SIGMA_V = 0.30
@@ -21,7 +21,7 @@ K_ATM   = 100.0
 TAU     = 1.0          # 1-year ATM call
 N_STEPS = 200          # time steps per path
 
-# ── Plot style ────────────────────────────────────────────────────────────────
+# Plot style
 plt.rcParams.update({
     "font.family":       "serif",
     "font.size":         11,
@@ -38,9 +38,7 @@ plt.rcParams.update({
 BLUE = "#2166AC"
 RED  = "#D6604D"
 
-# ════════════════════════════════════════════════════════════════════════════
 #  SEMI-ANALYTICAL HESTON PRICE  (Albrecher et al. branch-cut-safe form)
-# ════════════════════════════════════════════════════════════════════════════
 
 def heston_cf(u, S, v, tau, kappa, theta, sigma_v, rho, r):
     """
@@ -85,10 +83,8 @@ def heston_price_sa(S, v, K, tau, kappa, theta, sigma_v, rho, r):
     return S * P1 - K * np.exp(-r * tau) * P2
 
 
-# ════════════════════════════════════════════════════════════════════════════
 #  MONTE CARLO WITH ANTITHETIC VARIATES
 #  Euler full-truncation scheme  (Lord et al. 2010)
-# ════════════════════════════════════════════════════════════════════════════
 
 def mc_heston_antithetic(S0, V0, K, tau, kappa, theta, sigma_v, rho, r,
                           M, N, seed=42):
@@ -138,10 +134,7 @@ def mc_heston_antithetic(S0, V0, K, tau, kappa, theta, sigma_v, rho, r,
     se    = payoff.std(ddof=1) / np.sqrt(M)
     return price, se
 
-
-# ════════════════════════════════════════════════════════════════════════════
 #  COMPUTE RESULTS
-# ════════════════════════════════════════════════════════════════════════════
 
 print("Computing semi-analytical benchmark price...")
 SA_PRICE = heston_price_sa(S0, V0, K_ATM, TAU,
@@ -164,12 +157,11 @@ for M in PATH_COUNTS:
 mc_prices = np.array(mc_prices)
 mc_ses    = np.array(mc_ses)
 
-# ── O(M^{-1/2}) reference line anchored at first point ────────────────────
+# O(M^{-1/2}) reference line anchored at first point 
 ref_se = mc_ses[0] * np.sqrt(PATH_COUNTS[0] / PATH_COUNTS)
 
-# ════════════════════════════════════════════════════════════════════════════
+
 #  PLOT
-# ════════════════════════════════════════════════════════════════════════════
 
 fig, axes = plt.subplots(1, 2, figsize=(11, 4.5))
 fig.suptitle(
@@ -178,7 +170,7 @@ fig.suptitle(
     fontsize=11
 )
 
-# ── Left panel: MC price convergence ─────────────────────────────────────
+# Left panel: MC price convergence 
 ax = axes[0]
 ax.plot(PATH_COUNTS, mc_prices,
         "o-", color=BLUE, lw=1.8, ms=6,
@@ -197,7 +189,7 @@ ax.set_ylabel("European Call Price")
 ax.set_title(r"MC Convergence ($K = 100$, $\tau = 1\mathrm{y}$)")
 ax.legend(loc="lower right", framealpha=0.9)
 
-# ── Right panel: SE decay (log-log) ──────────────────────────────────────
+# Right panel: SE decay (log-log) 
 ax = axes[1]
 ax.loglog(PATH_COUNTS, mc_ses,
           "o-", color=BLUE, lw=1.8, ms=6,
@@ -213,9 +205,8 @@ ax.legend(framealpha=0.9)
 
 plt.tight_layout()
 
-# ════════════════════════════════════════════════════════════════════════════
+
 #  SAVE
-# ════════════════════════════════════════════════════════════════════════════
 
 for ext in ("pdf", "png"):
     fpath = os.path.join(SAVE_DIR, f"fig61_mc_convergence.{ext}")
@@ -224,4 +215,3 @@ for ext in ("pdf", "png"):
 
 plt.close()
 print("Done.")
-# %%
