@@ -8,11 +8,11 @@ import warnings
 warnings.filterwarnings('ignore')
 import os
 
-# ── Save path ──────────────────────────────────────────────────────────────
+# Save path 
 SAVE_DIR = r"C:\Users\User\OneDrive\Desktop\HFM470 Dissertation\images Chapter 2 and 3"
 os.makedirs(SAVE_DIR, exist_ok=True)
 
-# ── Colours ────────────────────────────────────────────────────────────────
+# Colours 
 C1 = '#1a4f8a'; C2 = '#c0392b'; C3 = '#1e8449'; C4 = '#7d3c98'; GREY = '#7f8c8d'
 
 plt.rcParams.update({
@@ -21,7 +21,7 @@ plt.rcParams.update({
     'legend.fontsize': 10, 'lines.linewidth': 2.0, 'figure.dpi': 150,
 })
 
-# ── Base parameters ────────────────────────────────────────────────────────
+# Base parameters 
 KAPPA   = 2.0; THETA = 0.04; SIGMA_V = 0.30; RHO = -0.70; V0 = 0.04
 r = 0.05; S0 = 100.0; TAU = 1.0     # fix maturity at 1 year
 
@@ -29,7 +29,7 @@ STRIKES   = np.array([80, 85, 90, 95, 100, 105, 110, 115, 120], dtype=float)
 MONEYNESS = np.log(STRIKES / S0)
 bs_flat_vol = np.sqrt(THETA)
 
-# ── Pricing functions ──────────────────────────────────────────────────────
+# Pricing functions 
 def heston_cf(u, S0, V0, kappa, theta, sigma_v, rho, r, tau):
     xi  = kappa - rho * sigma_v * 1j * u
     d   = np.sqrt(xi**2 + sigma_v**2 * u * (u + 1j))
@@ -69,7 +69,7 @@ def smile(kappa, theta, sigma_v, rho, V0, tau):
         ivs.append(implied_vol(S0, K, r, tau, p) * 100)
     return ivs
 
-# ── Sensitivity configurations ─────────────────────────────────────────────
+# Sensitivity configurations
 param_configs = [
     (
         r'Correlation $\rho$ (leverage effect)',
@@ -99,7 +99,7 @@ param_configs = [
 
 color_map = {'C1': C1, 'C2': C2, 'C3': C3, 'C4': C4, 'GREY': GREY}
 
-# ── Plot ───────────────────────────────────────────────────────────────────
+# Plot
 print("Computing parameter sensitivity...")
 fig, axes = plt.subplots(2, 2, figsize=(13, 10))
 
@@ -131,4 +131,3 @@ plt.savefig(os.path.join(SAVE_DIR, 'fig07_sensitivity.pdf'), bbox_inches='tight'
 plt.savefig(os.path.join(SAVE_DIR, 'fig07_sensitivity.png'), bbox_inches='tight', dpi=200)
 plt.close()
 print("Saved: fig07_sensitivity.pdf and fig07_sensitivity.png")
-# %%
