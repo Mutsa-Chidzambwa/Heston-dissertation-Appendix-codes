@@ -8,11 +8,11 @@ import warnings
 warnings.filterwarnings('ignore')
 import os
 
-# ── Save path ──────────────────────────────────────────────────────────────
+# Save path
 SAVE_DIR = r"C:\Users\User\OneDrive\Desktop\HFM470 Dissertation\images Chapter 2 and 3"
 os.makedirs(SAVE_DIR, exist_ok=True)
 
-# ── Colours ────────────────────────────────────────────────────────────────
+# Colours
 C1 = '#1a4f8a'; C2 = '#c0392b'; C3 = '#1e8449'; C4 = '#7d3c98'; GREY = '#7f8c8d'
 
 plt.rcParams.update({
@@ -21,7 +21,7 @@ plt.rcParams.update({
     'legend.fontsize': 10, 'lines.linewidth': 2.0, 'figure.dpi': 150,
 })
 
-# ── Parameters ─────────────────────────────────────────────────────────────
+# Parameters
 KAPPA   = 2.0
 THETA   = 0.04
 SIGMA_V = 0.30
@@ -34,7 +34,7 @@ STRIKES    = np.array([80, 85, 90, 95, 100, 105, 110, 115, 120], dtype=float)
 MATURITIES = np.array([0.25, 0.5, 1.0, 1.5, 2.0])
 MONEYNESS  = np.log(STRIKES / S0)
 
-# ── Pricing functions ──────────────────────────────────────────────────────
+# Pricing functions 
 def heston_cf(u, S0, V0, kappa, theta, sigma_v, rho, r, tau):
     xi  = kappa - rho * sigma_v * 1j * u
     d   = np.sqrt(xi**2 + sigma_v**2 * u * (u + 1j))
@@ -81,7 +81,7 @@ def implied_vol(S, K, r, tau, price):
         if abs(p - price) < 1e-9: break
     return sigma
 
-# ── Compute IV surface ─────────────────────────────────────────────────────
+# Compute IV surface 
 print("Computing implied volatility surface...")
 heston_ivs = np.zeros((len(MATURITIES), len(STRIKES)))
 for i, tau in enumerate(MATURITIES):
@@ -91,7 +91,7 @@ for i, tau in enumerate(MATURITIES):
 
 bs_flat_vol = np.sqrt(THETA)   # Black-Scholes flat vol = 20%
 
-# ── Plot ───────────────────────────────────────────────────────────────────
+# Plot 
 fig, ax = plt.subplots(figsize=(9, 5.5))
 colors = [C1, C2, C3, C4, GREY]
 
@@ -118,4 +118,3 @@ plt.savefig(os.path.join(SAVE_DIR, 'fig01_iv_smile.pdf'), bbox_inches='tight')
 plt.savefig(os.path.join(SAVE_DIR, 'fig01_iv_smile.png'), bbox_inches='tight', dpi=200)
 plt.close()
 print("Saved: fig01_iv_smile.pdf and fig01_iv_smile.png")
-# %%
